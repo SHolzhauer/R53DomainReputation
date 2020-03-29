@@ -4,3 +4,4 @@ different lists and tools to see if they get any bad hits.
 
 ## Lists
 * urlhaus.abuse.ch
+* malwaredomains.com
