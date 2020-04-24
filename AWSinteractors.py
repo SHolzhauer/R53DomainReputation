@@ -52,6 +52,7 @@ class R53:
 
     def __init__(self):
         self._client = boto3.client('route53')
+        self._wanted_zones = []
 
     def get_domains(self):
         hzs = self._get_hosted_zones()
@@ -97,6 +98,14 @@ class R53:
         logger.info("Retrieved {} hosted zones".format(
             len(hostedzones)
         ))
+
+        if len(self._wanted_zones) > 0:
+            retrieved = hostedzones
+            hostedzones = []
+            for zone in retrieved:
+                if zone in self._wanted_zones:
+                    hostedzones.append(zone)
+
         return hostedzones
 
 
