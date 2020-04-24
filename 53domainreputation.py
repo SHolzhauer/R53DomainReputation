@@ -1,7 +1,10 @@
+#!/usr/bin/env python3
 import requests
 import multiprocessing
 import logging
 import logmatic
+import zipfile
+import io
 from Domain import Domain
 from AWSinteractors import R53
 
@@ -26,12 +29,12 @@ def main():
     # Get the required files
     # Get the csv file and write it to a local file
     try:
-        resp = requests.get("https://urlhaus.abuse.ch/downloads/csv/")
+        resp = requests.get("https://urlhaus.abuse.ch/downloads/csv/", stream=True)
     except Exception:
         logger.error("Failed to retrieve urlhaus", exc_info=True)
     else:
-        with open("urlhaus.csv", "w") as f:
-            f.write(resp.content)
+        z = zipfile.ZipFile(io.BytesIO(resp.content))
+        z.extractall()
 
     # Get the file and write it to a local file
     try:
@@ -41,7 +44,7 @@ def main():
         logger.error("Failed to retrieve malwaredomains", exc_info=True)
     else:
         with open("justdomains.txt", "w") as f:
-            f.write(resp.content)
+            f.write(resp.text)
 
     pool = multiprocessing.Pool(processes=8)
     pool.map(handle_domain, r53_domains)
@@ -59,4 +62,7 @@ def handle_domain(domain):
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("Exiting...")

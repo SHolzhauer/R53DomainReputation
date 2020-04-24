@@ -36,7 +36,7 @@ class Domain:
         """Make sure the domain is not in urlhaus.abuse.ch/downloads/csv/"""
 
         # Read through the file with csv reader
-        with open("urlhaus.csv") as csvfile:
+        with open("csv.txt") as csvfile:
             read = csv.reader(csvfile, delimiter=',')
             for row in read:
                 if len(row) > 3 and self.domain in row[3]:

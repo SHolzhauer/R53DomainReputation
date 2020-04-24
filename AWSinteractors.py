@@ -43,7 +43,9 @@ def get_domains(hz):
     except Exception:
         logger.warning("Failed to retrieve domains", exc_info=True)
     else:
-        logger.info("Retrieved {} domains".format(len(domains)))
+        logger.info("Retrieved {} domains".format(len(domains)), extra={
+            "hostedzone": hz
+        })
     return domains
 
 
@@ -103,7 +105,7 @@ class R53:
             retrieved = hostedzones
             hostedzones = []
             for zone in retrieved:
-                if zone in self._wanted_zones:
+                if zone["Name"] in self._wanted_zones:
                     hostedzones.append(zone)
 
         return hostedzones
